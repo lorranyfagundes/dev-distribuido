@@ -1,49 +1,84 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+import httpx
 
-app = FastAPI(title="Gateway de Contas Online", description="API Gateway com HATEOAS")
+app = FastAPI(title="API Gateway com HATEOAS")
 
-#para o Angular conseguir acessar
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # Na vida real, colocaríamos a porta do Angular aqui
+    allow_origins=["*"], 
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ---------------------------------------------------------
-# As 2 APIs
-def api_interna_conta(id: int):
-    # Simula a API 1: Dados conta corrente
-    return {"id": id, "titular": "Lorrany", "saldo": 2500.0, "status_bloqueado": False}
+URL_API_CONTA = "http://127.0.0.1:8001"
+URL_API_CREDITO = "http://127.0.0.1:8002"
 
-def api_interna_credito(id: int):
-    # Simula a API 2: Serviço de crédito
-    return {"limite_pre_aprovado": 5000.0, "cartao_liberado": True}
+class NovaContaGateway(BaseModel):
+    id: int
+    titular: str
+    saldo: float
+    limite: float
 
-# ---------------------------------------------------------
-# O GATEWAY 
+@app.post("/gateway/conta", status_code=201)
+async def gateway_criar_conta(dados: NovaContaGateway):
+    async with httpx.AsyncClient() as client:
+        # Manda criar na porta 8001
+        await client.post(f"{URL_API_CONTA}/conta", json={
+            "id": dados.id,
+            "titular": dados.titular,
+            "saldo": dados.saldo,
+            "status_bloqueado": False
+        })
+        # Manda criar na porta 8002
+        await client.post(f"{URL_API_CREDITO}/credito", json={
+            "id": dados.id,
+            "limite": dados.limite
+        })
+    return {"mensagem": f"Sucesso! A conta de {dados.titular} foi criada em todos os microserviços."}
+
 @app.get("/gateway/conta/{conta_id}")
-def obter_resumo_conta(conta_id: int):
-    
-    # 1. O Gateway consome as duas APIs internas
-    dados_conta = api_interna_conta(conta_id)
-    dados_credito = api_interna_credito(conta_id)
-    
-    # 2. O Gateway monta o pacote para o Cliente e adiciona o HATEOAS (links)
-    resposta = {
-        "dados_principais": dados_conta,
-        "dados_extras": dados_credito,
-        "_links": {
-            "self": f"/gateway/conta/{conta_id}",
-            "extrato": f"/gateway/conta/{conta_id}/extrato"
-        }
+async def gateway_buscar_conta(conta_id: int):
+    async with httpx.AsyncClient() as client:
+        resposta_conta = await client.get(f"{URL_API_CONTA}/conta/{conta_id}")
+        if resposta_conta.status_code != 200:
+            raise HTTPException(status_code=404, detail="Conta não encontrada")
+        dados_conta = resposta_conta.json()
+
+        resposta_credito = await client.get(f"{URL_API_CREDITO}/credito/{conta_id}")
+        dados_credito = resposta_credito.json() if resposta_credito.status_code == 200 else {"limite": 0}
+
+    conta_consolidada = {
+        "id": dados_conta["id"],
+        "titular": dados_conta["titular"],
+        "saldo": dados_conta["saldo"],
+        "limite": dados_credito["limite"],
+        "status_bloqueado": dados_conta["status_bloqueado"]
+    }
+
+    # ----------------------------------------------------
+    # HATEOAS 
+    # ----------------------------------------------------
+    links = {
+        "self": f"/gateway/conta/{conta_id}",
+        "extrato": f"/gateway/conta/{conta_id}/extrato"
     }
     
-    # 3. MÁGICA DO HATEOAS: O Gateway decide quais ações o Front-end pode fazer
-    if not dados_conta["status_bloqueado"]:
-        # Se a conta NÃO estiver bloqueada, manda o link para liberar transações
-        resposta["_links"]["transferir"] = f"/gateway/conta/{conta_id}/transferir"
-        resposta["_links"]["pagar_boleto"] = f"/gateway/conta/{conta_id}/pagar"
+    # Se a conta NÃO estiver bloqueada, ele injeta os botões de ação!
+    if not conta_consolidada["status_bloqueado"]:
+        links["transferir"] = f"/gateway/conta/{conta_id}/transferir"
+        links["pagar_boleto"] = f"/gateway/conta/{conta_id}/pagar"
+
+    conta_consolidada["_links"] = links
+    return conta_consolidada # <--- AGORA O RETURN ESTÁ NO LUGAR CERTO!
+
+@app.delete("/gateway/conta/{conta_id}")
+async def gateway_deletar_conta(conta_id: int):
+    async with httpx.AsyncClient() as client:
+        # Manda o comando de exclusão para os dois microserviços
+        await client.delete(f"{URL_API_CONTA}/conta/{conta_id}")
+        await client.delete(f"{URL_API_CREDITO}/credito/{conta_id}")
         
-    return resposta
+    return {"mensagem": f"A conta {conta_id} foi excluída de todo o sistema."}
