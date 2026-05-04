@@ -22,7 +22,7 @@ def buscar_conta(conta_id: int):
         raise HTTPException(status_code=404, detail="Conta não encontrada")
     return bd_contas[conta_id]
 
-# Endpoint que altera o status para o HATEOAS reagir
+# Endpoint que altera o status da conta
 @app.put("/conta/{conta_id}/bloquear")
 def atualizar_status(conta_id: int, dados: ContaUpdate):
     if conta_id not in bd_contas:

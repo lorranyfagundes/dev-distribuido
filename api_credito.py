@@ -26,7 +26,7 @@ def criar_limite(novo_credito: CreditoCreate):
 
 @app.delete("/credito/{conta_id}")
 def deletar_limite(conta_id: int):
-    # O "if" garante que não vai dar erro se a pessoa não tiver limite
+    # idempotência: não vai dar erro se a pessoa não tiver limite
     if conta_id in bd_credito:
         del bd_credito[conta_id]
     return {"mensagem": "Limite apagado com sucesso!"}

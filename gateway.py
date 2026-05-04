@@ -66,18 +66,18 @@ async def gateway_buscar_conta(conta_id: int):
         "extrato": f"/gateway/conta/{conta_id}/extrato"
     }
     
-    # Se a conta NÃO estiver bloqueada, ele injeta os botões de ação!
+    # Se a conta não estiver bloqueada, ele injeta os botões de ações possíveis
     if not conta_consolidada["status_bloqueado"]:
         links["transferir"] = f"/gateway/conta/{conta_id}/transferir"
         links["pagar_boleto"] = f"/gateway/conta/{conta_id}/pagar"
 
     conta_consolidada["_links"] = links
-    return conta_consolidada # <--- AGORA O RETURN ESTÁ NO LUGAR CERTO!
+    return conta_consolidada 
 
 @app.delete("/gateway/conta/{conta_id}")
 async def gateway_deletar_conta(conta_id: int):
     async with httpx.AsyncClient() as client:
-        # Manda o comando de exclusão para os dois microserviços
+        # comando de exclusão para os dois microserviços
         await client.delete(f"{URL_API_CONTA}/conta/{conta_id}")
         await client.delete(f"{URL_API_CREDITO}/credito/{conta_id}")
         

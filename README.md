@@ -1,5 +1,5 @@
 ## Desenvolvimento de Sistemas Distribuídos
-### Aluna: Lorrany Silva
+### Aluna: Lorrany Fagundes
 ## Projeto REST - Sistema Bancário
 
 ### Instalar Dependências:
@@ -8,16 +8,17 @@
 ### Execute cada comando em um terminal diferente dentro da pasta raiz:
 
 Microserviço de Contas:     
-```uvicorn api_conta:app --port 8001```
+```python -m uvicorn api_conta:app --port 8001```
 
 Microserviço de Crédito:    
-```uvicorn api_credito:app --port 8002```
+```python -m uvicorn api_credito:app --port 8002```
 
 API Gateway:    
-```uvicorn gateway:app --port 8000```
+```python -m uvicorn gateway:app --port 8000```
 
 ### Configuração do Front-end:
-Abra um quarto terminal na pasta do projeto Angular (cliente-web-gateway):
+- Abra um quarto terminal
+- Entre na pasta do projeto Angular (cliente-web-gateway):
 1) Instalar dependências:   
 ```npm install```
 
@@ -25,3 +26,8 @@ Abra um quarto terminal na pasta do projeto Angular (cliente-web-gateway):
 Abra o arquivo src/app/app.ts e certifique-se de que a urlGateway aponta para o seu localhost: const urlGateway = 'http://localhost:8000/gateway/conta/' + id_da_conta;
 3) Iniciar o servidor:  
 ```ng serve```
+
+
+
+## Apresentação (Canva)
+https://canva.link/9t5aja73rhgdwpy

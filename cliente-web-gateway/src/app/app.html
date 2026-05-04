@@ -1,7 +1,7 @@
 <div style="padding: 2rem; max-width: 700px; margin: auto; font-family: sans-serif;">
   
-  <h2>Meu Banco Digital 🏦</h2>
-  <p style="margin-bottom: 2rem; color: #aaa;">Painel do Cliente integrado via API Gateway</p>
+  <h2>Meu Banco Digital</h2>
+  <p style="margin-bottom: 2rem; color: #aaa;">Painel do Cliente</p>
 
   <!-- CAIXA DE BUSCA -->
   <div style="display: flex; gap: 10px; margin-bottom: 20px; align-items: center;">
@@ -37,7 +37,7 @@
         
         <ng-container *ngIf="dadosCliente._links">
             <p-button *ngIf="dadosCliente._links.transferir" icon="pi pi-send" label="Transferir" severity="success"></p-button>
-            <p-button *ngIf="dadosCliente._links.pagar_boleto" icon="pi pi-barcode" label="Pagar Boleto" severity="secondary"></p-button>
+            <p-button *ngIf="dadosCliente._links.pagar_boleto" icon="pi pi-barcode" label="Pagar Boleto" severity="warn"></p-button>
         </ng-container>
       </div>
     </ng-template>
