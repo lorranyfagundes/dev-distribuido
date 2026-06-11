@@ -1,0 +1,2 @@
+- pip install zeep
+- mvn compile exec:java

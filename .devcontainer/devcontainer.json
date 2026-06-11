@@ -1,0 +1,13 @@
+{
+  "forwardPorts": [4200, 8085, 8086],
+  "portsAttributes": {
+    "8085": {
+      "label": "SOAP Java",
+      "visibility": "public"
+    },
+    "8086": {
+      "label": "WebSocket Python",
+      "visibility": "public"
+    }
+  }
+}

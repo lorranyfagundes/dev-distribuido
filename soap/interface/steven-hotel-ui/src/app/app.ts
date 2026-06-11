@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -13,18 +13,30 @@ export class App implements OnInit, OnDestroy {
   ws!: WebSocket;
   statusConexao = '🔴 Desconectado';
   
+  // Estado do Jogador
+  nicknameUsuario = '';
+  conectadoNoQuarto = false;
+  vencedorPartida = '';
+
+  // Estado da Arena (Multiplayer)
+  listaJogadores: any[] = [];
   desafioAtual: any = null;
-  chuteUsuario: string = '';
+  chuteUsuario = '';
   feedNotificacoes: any[] = [];
+
+  constructor(private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.conectarWebSocket();
   }
 
   conectarWebSocket() {
-  this.ws = new WebSocket('wss://scaling-acorn-pq4vjq96qg7c6r9x-8086.app.github.dev');
+    // ⚠️ ATENÇÃO: Cole aqui o SEU link correto da porta 8086 do Codespaces!
+    this.ws = new WebSocket('wss://scaling-acorn-pq4vjq96qg7c6r9x-8086.app.github.dev');
+
     this.ws.onopen = () => {
       this.statusConexao = '🟢 Conectado ao Middleware';
+      this.cdr.detectChanges();
     };
 
     this.ws.onmessage = (evento) => {
@@ -32,16 +44,40 @@ export class App implements OnInit, OnDestroy {
 
       if (dados.tipo === 'novo_desafio') {
         this.desafioAtual = dados;
+        this.vencedorPartida = ''; // Limpa vencedor se uma nova rodada começar
         this.chuteUsuario = '';
-      } else if (dados.tipo === 'resultado_chute') {
+      } 
+      else if (dados.tipo === 'resultado_chute') {
         this.feedNotificacoes.unshift(dados);
+      } 
+      else if (dados.tipo === 'atualizacao_sala') {
+        // Atualiza a posição de todo mundo nas linhas em tempo real!
+        this.listaJogadores = dados.jogadores;
       }
+      else if (dados.tipo === 'fim_jogo') {
+        this.vencedorPartida = dados.vencedor;
+        this.desafioAtual = null;
+      }
+      
+      this.cdr.detectChanges();
     };
 
     this.ws.onclose = () => {
       this.statusConexao = '🔴 Desconectado. Tentando novamente...';
+      this.conectadoNoQuarto = false;
+      this.cdr.detectChanges();
       setTimeout(() => this.conectarWebSocket(), 3000);
     };
+  }
+
+  // Envia o Nickname pro Python registrar o jogador no quarto
+  entrarNoQuarto() {
+    if (!this.nicknameUsuario.trim()) return;
+    this.ws.send(JSON.stringify({
+      acao: 'entrar',
+      nickname: this.nicknameUsuario
+    }));
+    this.conectadoNoQuarto = true;
   }
 
   pedirDesafio() {
@@ -49,7 +85,7 @@ export class App implements OnInit, OnDestroy {
   }
 
   enviarChute() {
-    if (!this.chuteUsuario.trim()) return;
+    if (!this.chuteUsuario.trim() || !this.desafioAtual) return;
     this.ws.send(JSON.stringify({
       acao: 'enviar_chute',
       id: this.desafioAtual.id,
