@@ -1,0 +1,39 @@
+<div class="container">
+  <header>
+    <h2>💎 Steven Hotel - Quiz em Tempo Real</h2>
+    <span class="badge" [class.conectado]="statusConexao.includes('🟢')">
+      {{ statusConexao }}
+    </span>
+  </header>
+
+  <main>
+    <section class="acoes">
+      <button class="btn-sortear" (click)="pedirDesafio()">🎲 Sortear Desafio do Java</button>
+    </section>
+
+    <section class="card-pergunta" *ngIf="desafioAtual">
+      <h3>{{ desafioAtual.comando }}</h3>
+      <div class="infos">
+        <span class="tag">Categoria: {{ desafioAtual.categoria }}</span>
+        <p class="dica"><strong>Dica da Pérola:</strong> {{ desafioAtual.dica }}</p>
+      </div>
+      
+      <div class="area-resposta">
+        <input type="text" [(ngModel)]="chuteUsuario" placeholder="Digite seu palpite aqui..." (keyup.enter)="enviarChute()">
+        <button class="btn-responder" (click)="enviarChute()">Enviar Resposta</button>
+      </div>
+    </section>
+
+    <section class="feed">
+      <h3>📡 Atividade ao Vivo (Broadcast)</h3>
+      <div class="feed-container">
+        <div class="alerta" *ngFor="let notif of feedNotificacoes" [class.sucesso]="notif.acertou" [class.erro]="!notif.acertou">
+          <strong>Chute enviado: "{{ notif.chute }}"</strong>
+          <p>{{ notif.mensagem }}</p>
+          <span class="pontos" *ngIf="notif.acertou">+{{ notif.pontos }} XP</span>
+        </div>
+        <p class="vazio" *ngIf="feedNotificacoes.length === 0">Aguardando jogadas na rede...</p>
+      </div>
+    </section>
+  </main>
+</div>
