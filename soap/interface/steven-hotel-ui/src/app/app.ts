@@ -18,6 +18,18 @@ export class App implements OnInit, OnDestroy {
   conectadoNoQuarto = false;
   vencedorPartida = '';
 
+  // Lista de personagens disponíveis
+  personagens = [
+    { nome: 'Steven', url: 'https://media.giphy.com/media/xorKMdTO2C28L96e9I/giphy.gif' },
+    { nome: 'Garnet', url: 'https://media.giphy.com/media/7ziNKdhqx8VAroK766/giphy.gif' },
+    { nome: 'Pérola', url: 'https://media.giphy.com/media/5eFREtnL7WydjjiZpG/giphy.gif' },
+    { nome: 'Ametista', url: 'https://media.giphy.com/media/aLZ6CJvuOw3vPvgLKd/giphy.gif' },
+    { nome: 'Rose', url: 'https://media.giphy.com/media/NklD1aEdJSpJV0ezzc/giphy.gif' }
+  ];
+
+  // Personagem que a pessoa escolheu (Steven é o padrão)
+  personagemSelecionado = this.personagens[0].url;
+
   // Estado da Arena (Multiplayer)
   listaJogadores: any[] = [];
   desafioAtual: any = null;
@@ -75,7 +87,8 @@ export class App implements OnInit, OnDestroy {
     if (!this.nicknameUsuario.trim()) return;
     this.ws.send(JSON.stringify({
       acao: 'entrar',
-      nickname: this.nicknameUsuario
+      nickname: this.nicknameUsuario,
+      personagemUrl: this.personagemSelecionado 
     }));
     this.conectadoNoQuarto = true;
   }

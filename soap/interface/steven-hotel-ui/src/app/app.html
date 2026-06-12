@@ -1,20 +1,35 @@
 <div class="container">
   <header>
-    <h2>💎 STEVEN HABBO HOTEL - MULTIPLAYER ARENA</h2>
+    <h2>💎 STEVEN HOTEL - MULTIPLAYER ARENA</h2>
     <span class="badge" [class.conectado]="statusConexao.includes('🟢')">
       {{ statusConexao }}
     </span>
   </header>
 
-  <div class="tela-login" *ngIf="!conectadoNoQuarto">
-    <div class="caixa-login">
-      <h3>🏨 Entre no Quarto do Steven</h3>
-      <p>Escolha seu nickname para se juntar à competição de sistemas distribuídos:</p>
-      <input type="text" [(ngModel)]="nicknameUsuario" placeholder="Ex: Lorrany_F" (keyup.enter)="entrarNoQuarto()">
+  <div class="caixa-login">
+      <h2>Entre no Quarto</h2>
+      <h3>escolha a sua Gem:</h3>
+
+      <div class="selecao-personagem">
+        <div class="lista-gems">
+          <div class="gem-item" *ngFor="let p of personagens" (click)="personagemSelecionado = p.url">
+            
+            <div class="nome-gem" [class.destaque]="personagemSelecionado === p.url">
+              {{ p.nome }}
+            </div>
+            
+            <img [src]="p.url" 
+                 [alt]="p.nome"
+                 class="gem-opcao"
+                 [class.selecionado]="personagemSelecionado === p.url">
+          </div>
+        </div>
+      </div>
+
+      <input type="text" [(ngModel)]="nicknameUsuario" placeholder="digite seu nome" (keyup.enter)="entrarNoQuarto()">
+      
       <button class="btn-entrar" (click)="entrarNoQuarto()">ENTRAR NO HOTEL</button>
     </div>
-  </div>
-
   <main *ngIf="conectadoNoQuarto">
     
     <div class="alerta-vitoria" *ngIf="vencedorPartida">
@@ -22,17 +37,21 @@
     </div>
 
 
-    <section class="arena-tabuleiro">
-      <h4>🏃 MAPA DAS LINHAS (LINHA 1 ATÉ 5)</h4>
-      <div class="linha-pista" *ngFor="let numLinha of [0, 1, 2, 3, 4]">
-        <div class="numero-linha">L{{ numLinha + 1 }}</div>
-        <div class="espaco-jogadores">
-          <ng-container *ngFor="let jogador of listaJogadores">
-            <div class="player-token" *ngIf="jogador.linha === numLinha" [class.meu-token]="jogador.nickname === nicknameUsuario">
-              👤 {{ jogador.nickname }}
-            </div>
-          </ng-container>
-        </div>
+    <section class="palco-templo">
+      <div class="pista-corrida">
+        <ng-container *ngFor="let jogador of listaJogadores">
+          
+          <div class="personagem-container" 
+               [style.left.%]="jogador.linha * 20" 
+               [class.meu-personagem]="jogador.nickname === nicknameUsuario">
+            
+            <div class="tag-nome">{{ jogador.nickname }}</div>
+            
+            <img [src]="jogador.personagemUrl || 'https://media.giphy.com/media/xorKMdTO2C28L96e9I/giphy.gif'" class="sprite-boneco" [alt]="jogador.nickname">
+            
+          </div>
+          
+        </ng-container>
       </div>
     </section>
 

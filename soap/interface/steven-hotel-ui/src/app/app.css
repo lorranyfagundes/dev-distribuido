@@ -1,3 +1,5 @@
+/* Importando fontes retro do Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 :host {
@@ -5,37 +7,51 @@
   --habbo-dark: #222;
   --habbo-gold: #f6b500;
   --habbo-blue: #1b4b5e;
-  --habbo-floor: #322519;
+  --su-pink: #f48fb1; /* Rosa Steven! */
 }
 
 body {
-  background-color: var(--habbo-bg);
-  padding: 10px;
+  font-family: 'VT323', monospace;
+  background-color: #1a2530; 
+  color: #333;
+  margin: 0;
+  padding: 20px;
 }
 
+/* O Container do Jogo (A Janela) */
 .container {
-  font-family: 'Segoe UI', Arial, sans-serif;
+  font-family: 'VT323', monospace;
   max-width: 800px;
-  margin: 10px auto;
+  margin: 0 auto;
   background: #eedec4;
-  border: 3px solid var(--habbo-dark);
-  box-shadow: 6px 6px 0px rgba(0,0,0,0.3);
+  border: 4px solid var(--habbo-dark);
+  box-shadow: 8px 8px 0px rgba(0,0,0,0.5);
   border-radius: 4px;
 }
 
 header {
   background: var(--habbo-blue);
   color: white;
-  padding: 12px;
+  padding: 15px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 3px solid var(--habbo-dark);
+  border-bottom: 4px solid var(--habbo-dark);
 }
 
-h2 { margin: 0; font-family: 'Press Start 2P', cursive; font-size: 0.75rem; }
+h2 { 
+  margin: 0; 
+  font-family: 'Press Start 2P', cursive; /* Fonte mais grossa pro título */
+  font-size: 0.8rem; 
+  text-shadow: 2px 2px #000;
+}
 
-.badge { background: #bd2d2d; border: 2px solid var(--habbo-dark); padding: 4px; font-size: 0.75rem; font-weight: bold;}
+.badge { 
+  background: #bd2d2d; 
+  border: 2px solid var(--habbo-dark); 
+  padding: 4px 8px; 
+  font-size: 1.2rem; 
+}
 .badge.conectado { background: #52a832; }
 
 main { padding: 15px; }
@@ -46,95 +62,189 @@ main { padding: 15px; }
   background: #496372;
   color: white;
   text-align: center;
+  font-size: 1.5rem;
 }
 .caixa-login {
   max-width: 400px;
   margin: 0 auto;
   background: #2c3e4a;
   padding: 30px;
-  border: 3px solid var(--habbo-dark);
+  border: 4px solid var(--habbo-dark);
+  box-shadow: 6px 6px 0px rgba(0,0,0,0.3);
+}
+.caixa-login h3 { font-family: 'Press Start 2P', cursive; font-size: 1rem; margin-bottom: 20px;}
+.btn-entrar {
+  background: #52a832; color: white; border: 3px solid var(--habbo-dark);
+  padding: 10px; width: 100%; font-size: 1.5rem; font-family: 'VT323', monospace;
+  margin-top: 15px; cursor: pointer; box-shadow: 4px 4px 0px rgba(0,0,0,0.3);
+}
+.btn-entrar:hover { background: #63c73d; transform: translateY(-2px); }
+
+/* 🌟 O PALCO DO TEMPLO (NOVO!) */
+.palco-templo {
+  width: 100%;
+  height: 350px;
+  background-image: url('../../assets/fundo-templo.png'); /* Confirme se a imagem tá na pasta assets! */
+  background-size: cover;
+  background-position: center bottom;
+  position: relative;
+  border: 4px solid var(--habbo-dark);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.5); /* Sombra interna para dar profundidade */
+}
+
+/* A área onde os bonecos andam */
+.pista-corrida {
+  position: absolute;
+  bottom: 20px; 
+  width: 90%;
+  left: 5%;
+  height: 100px;
+}
+
+/* Container do jogador flutuante */
+.personagem-container {
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: left 1s cubic-bezier(0.25, 0.8, 0.25, 1); /* Animação estilo pulo suave */
+}
+
+/* A Tag de nome estilo Habbo */
+.tag-nome {
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 1.2rem;
+  margin-bottom: 5px;
+  white-space: nowrap;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Se for o seu personagem, o nome fica amarelo! */
+.personagem-container.meu-personagem .tag-nome {
+  color: var(--habbo-gold);
+  border-color: var(--habbo-gold);
+}
+
+/* O GIF do Steven */
+.sprite-boneco {
+  height: 80px; /* Ajuste a altura se o GIF ficar muito grande/pequeno */
+  filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.4)); /* Sombra pixelada no boneco */
+}
+
+/* ❓ CAIXA DE PERGUNTA */
+.card-pergunta { 
+  background: #fff; 
+  border: 4px solid var(--habbo-dark); 
+  padding: 15px; 
+  margin-bottom: 15px;
   box-shadow: 4px 4px 0px rgba(0,0,0,0.2);
 }
-.caixa-login h3 { font-family: 'Press Start 2P', cursive; font-size: 0.8rem; margin-bottom: 20px;}
-.btn-entrar {
-  background: #52a832; color: white; border: 2px solid var(--habbo-dark);
-  padding: 10px; width: 100%; font-weight: bold; margin-top: 15px; cursor: pointer;
-}
+.card-pergunta h3 { margin: 10px 0; color: var(--habbo-blue); font-size: 2rem;}
+.tag { background: var(--su-pink); color: #fff; padding: 4px 8px; font-size: 1.2rem; border: 2px solid var(--habbo-dark);}
+.dica { color: #666; font-size: 1.2rem; }
 
-/* 🏃 TABULEIRO DE LINHAS MULTIPLAYER */
-.arena-tabuleiro {
-  background: #a9967d;
-  border: 3px solid var(--habbo-dark);
-  padding: 15px;
-  margin-bottom: 20px;
+.area-resposta { display: flex; gap: 10px; margin-top: 15px; }
+input { 
+  flex: 1; padding: 10px; border: 3px solid var(--habbo-dark); 
+  font-size: 1.5rem; font-family: 'VT323', monospace; 
 }
-.arena-tabuleiro h4 {
-  margin: 0 0 10px 0; font-family: 'Press Start 2P', cursive; font-size: 0.65rem; color: #fff; text-shadow: 1px 1px var(--habbo-dark);
+.btn-responder { 
+  background: var(--habbo-blue); color: white; padding: 0 25px; 
+  font-family: 'VT323', monospace; font-size: 1.5rem; border: 3px solid var(--habbo-dark); cursor: pointer;
 }
-.linha-pista {
-  display: flex;
-  background: #403020; /* Cor escura imitando asfalto/linhas de madeira */
-  border-bottom: 2px solid #5a4531;
-  margin-bottom: 4px;
-  align-items: center;
-}
-.numero-linha {
-  background: var(--habbo-gold);
-  color: #000;
-  font-weight: bold;
-  padding: 8px;
-  width: 35px;
-  text-align: center;
-  border-right: 2px solid var(--habbo-dark);
-}
-.espaco-jogadores {
-  display: flex;
-  gap: 10px;
-  padding: 5px 15px;
-  flex-wrap: wrap;
-}
-/* Bonequinho do Jogador */
-.player-token {
-  background: #fff;
-  border: 2px solid var(--habbo-dark);
-  border-radius: 15px;
-  padding: 4px 12px;
-  font-size: 0.85rem;
-  font-weight: bold;
-  color: #000;
-  box-shadow: 2px 2px 0px rgba(0,0,0,0.3);
-  animation: bounce 0.3s ease infinite alternate;
-}
-.player-token.meu-token {
-  background: #ffeb3b; /* Amarelo brilhante para destacar você mesmo na corrida! */
-  border-color: #f57f17;
-}
+.btn-responder:hover { background: #266b85; }
 
-@keyframes bounce {
-  from { transform: translateY(0); }
-  to { transform: translateY(-2px); }
+/* 💬 FEED CHAT (Estilo histórico do Habbo) */
+.feed { 
+  background: #f4f4f4; border: 4px solid var(--habbo-dark); 
+  padding: 15px; height: 160px; overflow-y: auto; 
+  display: flex; flex-direction: column-reverse; gap: 10px; 
 }
-
-/* OUTROS ELEMENTOS */
-button { font-weight: bold; cursor: pointer; border: 2px solid var(--habbo-dark); border-radius: 4px; }
-.btn-sortear { background: var(--habbo-gold); width: 100%; padding: 12px; font-size: 1rem; margin-bottom: 15px; }
-.card-pergunta { background: #fff; border: 3px solid var(--habbo-dark); padding: 15px; margin-bottom: 15px; }
-.card-pergunta h3 { margin: 5px 0; color: var(--habbo-blue); }
-.tag { background: #333; color: #fff; padding: 2px 6px; font-size: 0.7rem; font-weight: bold;}
-.area-resposta { display: flex; gap: 10px; margin-top: 10px; }
-input { flex: 1; padding: 10px; border: 2px solid var(--habbo-dark); font-size: 1rem; }
-.btn-responder { background: #52a832; color: white; padding: 0 20px; }
-
-/* FEED CHAT */
-.feed { background: #719cb4; border: 3px solid var(--habbo-dark); padding: 15px; height: 180px; overflow-y: auto; display: flex; flex-direction: column-reverse; gap: 8px; }
 .balao-fala { display: flex; align-items: center; }
-.avatar-icon { width: 25px; height: 25px; background: #fff; border: 2px solid var(--habbo-dark); border-radius: 4px; display: flex; align-items: center; justify-content: center; margin-right: 5px; }
-.texto-balao { background: white; border: 2px solid var(--habbo-dark); border-radius: 5px; padding: 4px 10px; font-size: 0.85rem; color: #000; }
+.avatar-icon { 
+  width: 30px; height: 30px; background: #fff; border: 2px solid var(--habbo-dark); 
+  border-radius: 4px; display: flex; align-items: center; justify-content: center; margin-right: 8px; font-size: 1.2rem;
+}
+.texto-balao { 
+  background: white; border: 2px solid var(--habbo-dark); border-radius: 8px; 
+  padding: 6px 12px; font-size: 1.2rem; color: #000; box-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+}
 .balao-fala.sucesso .texto-balao { background: #d4edda; }
 .balao-fala.erro .texto-balao { background: #f8d7da; }
-.vazio { text-align: center; color: white; font-family: 'Press Start 2P', cursive; font-size: 0.5rem; margin-top: 50px; }
+.vazio { text-align: center; color: #888; font-size: 1.2rem; margin-top: 50px; }
 
+/* 🏆 ALERTA DE VITÓRIA */
 .alerta-vitoria {
-  background: #ffeb3b; border: 3px solid #f57f17; color: #5d4037; font-weight: bold;
-  padding: 15px; text-align: center; margin-bottom: 15px; font-family: 'Press Start 2P', cursive; font-size: 0.6rem; line-height: 1.5;
+  background: #ffeb3b; border: 4px solid #f57f17; color: #000;
+  padding: 15px; text-align: center; margin-bottom: 15px; font-family: 'Press Start 2P', cursive; font-size: 0.8rem; line-height: 1.5;
+  animation: piscar 1s infinite;
+}
+@keyframes piscar {
+  0% { opacity: 1; }
+  50% { opacity: 0.8; }
+  100% { opacity: 1; }
+}
+
+.selecao-personagem {
+  margin: 20px 0;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  border-radius: 8px;
+  border: 2px dashed var(--habbo-dark);
+}
+
+.lista-gems {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.gem-opcao {
+  height: 60px;
+  cursor: pointer;
+  filter: grayscale(100%) opacity(50%); /* Deixa cinza quem não tá selecionado */
+  transition: all 0.2s ease-in-out;
+}
+
+.gem-opcao:hover {
+  filter: grayscale(0%) opacity(100%);
+  transform: scale(1.1);
+}
+
+.gem-opcao.selecionado {
+  filter: grayscale(0%) opacity(100%);
+  transform: scale(1.2);
+  border-bottom: 4px solid var(--habbo-gold); /* Sublinhado amarelo em quem foi escolhido */
+}
+
+/* Alinha o nome e a imagem da Gem */
+.gem-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+/* O texto do nome apagadinho */
+.nome-gem {
+  font-family: 'VT323', monospace;
+  font-size: 1.2rem;
+  color: white;
+  opacity: 0.5;
+  transition: all 0.2s;
+}
+
+/* Quando você clica, o nome acende em amarelo! */
+.nome-gem.destaque {
+  color: var(--habbo-gold);
+  opacity: 1;
+  font-weight: bold;
+  text-shadow: 2px 2px #000;
 }
